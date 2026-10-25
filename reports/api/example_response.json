@@ -1,0 +1,85 @@
+{
+  "request_id": "364c4279-84ba-477a-b836-7b6cecb0969e",
+  "model_version": "xgboost_best",
+  "policy_version": "1.0.0",
+  "model_type": "XGBClassifier",
+  "feature_count": 30,
+  "model_score": 0.027319639921188354,
+  "score_interpretation": "Uncalibrated XGBoost output score; not a verified real-world probability of fraud.",
+  "risk_score_0_100": 2.7319639921188354,
+  "decision_threshold": 0.78530025,
+  "risk_level": "MEDIUM",
+  "predicted_fraud": false,
+  "decision": "NOT_FLAGGED",
+  "latency_ms": 13.933,
+  "shap_available": true,
+  "shap_output_space": "model probability output scale; contributions sum to model_score",
+  "shap_base_value": 0.02406219209299794,
+  "shap_reconstructed_score": 0.02731965505647463,
+  "shap_additivity_error": -1.5135286274281512e-08,
+  "top_positive_contributions": [
+    {
+      "feature": "V4",
+      "feature_value": 1.37815522427443,
+      "shap_value": 0.008449559703244187,
+      "direction": "increases_model_score"
+    },
+    {
+      "feature": "V12",
+      "feature_value": -0.617800855762348,
+      "shap_value": 0.008380887450827839,
+      "direction": "increases_model_score"
+    },
+    {
+      "feature": "V5",
+      "feature_value": -0.338320769942518,
+      "shap_value": 0.00020530634881813918,
+      "direction": "increases_model_score"
+    },
+    {
+      "feature": "V1",
+      "feature_value": -1.3598071336738,
+      "shap_value": 0.00019853652787146694,
+      "direction": "increases_model_score"
+    },
+    {
+      "feature": "V8",
+      "feature_value": 0.0986979012610507,
+      "shap_value": 0.00015321319960163605,
+      "direction": "increases_model_score"
+    }
+  ],
+  "top_negative_contributions": [
+    {
+      "feature": "V14",
+      "feature_value": -0.311169353699879,
+      "shap_value": -0.005663394285031783,
+      "direction": "decreases_model_score"
+    },
+    {
+      "feature": "V3",
+      "feature_value": 2.53634673796914,
+      "shap_value": -0.002176168690049207,
+      "direction": "decreases_model_score"
+    },
+    {
+      "feature": "V20",
+      "feature_value": 0.251412098239705,
+      "shap_value": -0.0015503506289966476,
+      "direction": "decreases_model_score"
+    },
+    {
+      "feature": "V17",
+      "feature_value": 0.207971241929242,
+      "shap_value": -0.0009999541893908506,
+      "direction": "decreases_model_score"
+    },
+    {
+      "feature": "Amount",
+      "feature_value": 149.62,
+      "shap_value": -0.0007715420889084575,
+      "direction": "decreases_model_score"
+    }
+  ],
+  "interpretation_note": "SHAP describes how input features contribute to this model output relative to its background; it does not prove causation or identify the real-world meaning of anonymized PCA features."
+}

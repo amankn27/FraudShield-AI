@@ -207,3 +207,27 @@ Model artifacts are saved separately from the earlier phase artifacts: `models/h
 In the current run, XGBoost had test Average Precision 0.7845, the autoencoder 0.0839, and the hybrid 0.7379. At thresholds selected to target the same validation false-positive rate, hybrid recall was 86.67% versus 85.33% for XGBoost, and hybrid had 386 false positives versus 392 for XGBoost. That modest threshold-specific improvement comes with lower Average Precision; it is not strong evidence that the hybrid should replace XGBoost. Keep XGBoost as the primary model unless a future fresh time-based holdout confirms repeatable benefit.
 
 The historical test period has already been inspected in previous project phases, so treat Phase 9 results as exploratory rather than a final independent performance claim.
+
+
+## Phase 10 — FastAPI prediction service
+
+Phase 10 turns the saved XGBoost model and Phase 6 decision policy into an HTTP service. `api/schemas.py` defines Pydantic request/response models; `src/evaluation/shap_explainer.py` loads and caches the model/policy/background, validates model feature order, returns predictions, and optionally calculates local SHAP values. Normal Uvicorn startup preloads the model service once, while SHAP's `TreeExplainer` is initialized only when an explanation is requested.
+
+Run the API from the project root:
+
+```powershell
+python -m pip install -r requirements.txt
+uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Open `http://127.0.0.1:8000/docs` for interactive OpenAPI documentation. The API provides:
+
+- `GET /health` — service/artifact readiness.
+- `GET /model-info` — model version/type, feature names, threshold, risk bands, library versions.
+- `POST /predict` — validates and scores a transaction; includes SHAP contributions by default.
+- `POST /predict?include_shap=false` — score-only inference with lower overhead.
+- `POST /explain` — deprecated compatibility alias for `/predict` with SHAP enabled.
+
+The request must contain the complete model feature vector (`Time`, `V1`–`V28`, `Amount`). Pydantic rejects missing fields, unexpected fields including `Class`, non-finite values, and negative `Time` or `Amount`. The API returns 422 for invalid inputs, 503 when required model artifacts cannot be loaded, and generic 500 errors for unexpected inference failures. The model score is uncalibrated; `risk_score_0_100` is only 100 times that score, not a calibrated fraud percentage. SHAP describes the model's attribution and not real-world causation.
+
+The interactive walkthrough is `notebooks/09_fastapi_prediction_service.ipynb`. The smoke-test request, response, and report are in `reports/api/`. Run `python -m pytest -q` to execute the full suite. This development API has no authentication, authorization, rate limiting, or production transport security; do not expose it publicly until those controls are added.

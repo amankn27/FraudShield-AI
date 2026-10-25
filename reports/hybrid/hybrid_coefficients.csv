@@ -1,3 +1,3 @@
 signal,coefficient
-normalized XGBoost logit,1.229022598879858
-normalized log1p anomaly error,0.21173879913912133
+normalized XGBoost logit,1.2056934983751004
+normalized log1p anomaly error,0.1965456012320056

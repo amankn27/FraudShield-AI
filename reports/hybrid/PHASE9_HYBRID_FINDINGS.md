@@ -10,9 +10,9 @@ The base XGBoost and autoencoder are fit using the chronological training block.
 
 | Model | Average Precision | ROC-AUC | Precision | Recall | F1 | FP | FN | Threshold |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| XGBoost | 0.7867 | 0.9855 | 0.1400 | 0.8533 | 0.2406 | 393 | 11 | 0.298779 |
-| Autoencoder | 0.0845 | 0.9216 | 0.0954 | 0.4933 | 0.1598 | 351 | 38 | 2.14366 |
-| Hybrid (XGBoost + autoencoder) | 0.7371 | 0.9851 | 0.1477 | 0.8667 | 0.2524 | 375 | 10 | 1.81059 |
+| XGBoost | 0.7845 | 0.9853 | 0.1404 | 0.8533 | 0.2411 | 392 | 11 | 0.305407 |
+| Autoencoder | 0.0839 | 0.9212 | 0.0959 | 0.4933 | 0.1605 | 349 | 38 | 2.13636 |
+| Hybrid (XGBoost + autoencoder) | 0.7379 | 0.9849 | 0.1441 | 0.8667 | 0.2471 | 386 | 10 | 1.65049 |
 
 ## Threshold policy
 
