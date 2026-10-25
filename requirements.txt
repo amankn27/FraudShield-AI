@@ -1,0 +1,12 @@
+# Phase 1: foundation, dataset inspection, and validation.
+# Later phases will add XGBoost, PyTorch, SHAP, FastAPI, Streamlit, MLflow, and database dependencies.
+numpy>=1.26,<3.0
+pandas>=2.2,<4.0
+matplotlib>=3.8,<4.0
+seaborn>=0.13,<1.0
+scikit-learn>=1.5,<2.0
+jupyterlab>=4.2,<5.0
+PyYAML>=6.0,<7.0
+python-dotenv>=1.0,<2.0
+pytest>=8.0,<10.0
+joblib>=1.4,<2.0
