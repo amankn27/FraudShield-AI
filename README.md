@@ -188,3 +188,22 @@ For a larger run, raise `--max-train-normal-rows` and/or `--epochs`; e.g. `pytho
 The model state is saved to `models/autoencoder_state.pt`, with fitted preprocessing and the threshold in `models/autoencoder_preprocessor.joblib`. The inference helper `score_transactions` returns an `anomaly_score` and thresholded `is_anomaly` flag. Reports are written to `reports/autoencoder/`, including training history, threshold sensitivity, score distributions, confusion matrix, test predictions, and a comparison with XGBoost.
 
 Anomaly scores are not calibrated probabilities or proof of fraud. In the final tested run, the autoencoder achieved test Average Precision 0.1569 versus 0.7872 for the supervised XGBoost model. The selected checkpoint maximizes validation Average Precision (using validation labels for model selection), while gradient updates still use legitimate training rows only. It can be studied as a complementary signal in Phase 9, but current results do not support replacing XGBoost with the autoencoder.
+
+## Phase 9 — Hybrid ML system
+
+Phase 9 tests whether the PyTorch autoencoder adds useful information beyond XGBoost. Run:
+
+```powershell
+python -m src.models.hybrid_system
+python -m pytest -q
+```
+
+The base XGBoost model is fit on the chronological training block using the Phase 5 selected configuration. The Phase 9 autoencoder is fit on legitimate training examples only and early-stopped using reconstruction loss on legitimate validation examples only. It deliberately does **not** select the checkpoint using validation fraud labels. The first 70% of validation fits a regularized Logistic Regression stacker, and the final 30% of validation calibrates model-specific thresholds on legitimate rows only to target about 1% validation false-positive rate.
+
+Score inputs are normalized as `logit(XGBoost score)` and `log1p(autoencoder reconstruction error)`, then standardized using a scaler fitted on the stacker's training slice. The output margin and sigmoid-transformed 0–100 display value are uncalibrated ranking scores, **not verified fraud probabilities**. With only 57 fraud examples in validation, this project does not fit a separate probability calibrator.
+
+Model artifacts are saved separately from the earlier phase artifacts: `models/hybrid_xgboost_train_only.json`, `models/hybrid_autoencoder_state.pt`, `models/hybrid_autoencoder_preprocessor.joblib`, and `models/hybrid_stack.joblib`. Results and row-level scores are under `reports/hybrid/`; the interactive notebook is `notebooks/08_hybrid_ml_system.ipynb`.
+
+In the current run, XGBoost had test Average Precision 0.7845, the autoencoder 0.0839, and the hybrid 0.7379. At thresholds selected to target the same validation false-positive rate, hybrid recall was 86.67% versus 85.33% for XGBoost, and hybrid had 386 false positives versus 392 for XGBoost. That modest threshold-specific improvement comes with lower Average Precision; it is not strong evidence that the hybrid should replace XGBoost. Keep XGBoost as the primary model unless a future fresh time-based holdout confirms repeatable benefit.
+
+The historical test period has already been inspected in previous project phases, so treat Phase 9 results as exploratory rather than a final independent performance claim.

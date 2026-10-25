@@ -1,0 +1,249 @@
+{
+  "phase": 9,
+  "project": "FraudShield AI",
+  "protocol": "Chronological 60/20/20; base models fit on train only; hybrid trained on first 70% of validation; thresholds calibrated on final 30% of validation legitimate scores; test evaluated after all choices.",
+  "data_split": {
+    "train_fraction_actual": 0.6000133423686917,
+    "validation_fraction_actual": 0.1999880620911705,
+    "test_fraction_actual": 0.1999985955401377,
+    "train_time_max": 120396.0,
+    "validation_time_min": 120397.0,
+    "validation_time_max": 145248.0,
+    "test_time_min": 145249.0
+  },
+  "partition_counts": {
+    "train": {
+      "rows": 170888,
+      "fraud": 360
+    },
+    "validation": {
+      "rows": 56958,
+      "fraud": 57
+    },
+    "hybrid_meta_train": {
+      "rows": 39871,
+      "fraud": 34
+    },
+    "threshold_calibration": {
+      "rows": 17087,
+      "fraud": 23
+    },
+    "test": {
+      "rows": 56961,
+      "fraud": 75
+    }
+  },
+  "base_models": {
+    "xgboost": {
+      "fit_rows": 170888,
+      "selected_hyperparameters_source": "Phase 5 validation-selected configuration",
+      "scale_pos_weight": 100.0
+    },
+    "autoencoder": {
+      "normal_training_rows_available": 170528,
+      "normal_training_rows_sampled_for_gradient_updates": 60000,
+      "legitimate_validation_rows_for_early_stopping": 56901,
+      "epochs_requested": 30,
+      "epochs_run": 30,
+      "best_epoch": 30,
+      "best_legitimate_validation_mse": 0.47231976226661176,
+      "latent_dim": 8,
+      "device": "cpu",
+      "training_selection_method": "minimum reconstruction loss on legitimate validation rows only; validation fraud labels not used",
+      "fit_seconds": 16.856,
+      "features": [
+        "V1",
+        "V2",
+        "V3",
+        "V4",
+        "V5",
+        "V6",
+        "V7",
+        "V8",
+        "V9",
+        "V10",
+        "V11",
+        "V12",
+        "V13",
+        "V14",
+        "V15",
+        "V16",
+        "V17",
+        "V18",
+        "V19",
+        "V20",
+        "V21",
+        "V22",
+        "V23",
+        "V24",
+        "V25",
+        "V26",
+        "V27",
+        "V28",
+        "Amount_log1p"
+      ]
+    }
+  },
+  "normalization": {
+    "xgboost_transform": "logit(clipped predict_proba score)",
+    "autoencoder_transform": "log1p(reconstruction error)",
+    "normalizer": "StandardScaler fitted on hybrid meta-training rows only",
+    "hybrid_model": "regularized LogisticRegression(C=0.1, class_weight=balanced)",
+    "output_note": "Hybrid decision margin and its 0-100 sigmoid display are uncalibrated ranking scores, not verified fraud probabilities."
+  },
+  "threshold_policy": {
+    "target_fpr": 0.01,
+    "method": "99.0% quantile of each score on legitimate rows in the later validation calibration period",
+    "thresholds": {
+      "xgboost": 0.29877907037734985,
+      "autoencoder": 2.1436567306518555,
+      "hybrid_margin": 1.8105945771736431
+    }
+  },
+  "validation_calibration_metrics": {
+    "xgboost": {
+      "n_samples": 17087,
+      "n_fraud": 23,
+      "fraud_prevalence": 0.0013460525545736526,
+      "threshold": 0.29877907037734985,
+      "accuracy": 0.9897582957804179,
+      "precision": 0.1,
+      "recall": 0.8260869565217391,
+      "f1": 0.1784037558685446,
+      "roc_auc": 0.9663351780509183,
+      "average_precision": 0.8119486472821948,
+      "true_negative": 16893,
+      "false_positive": 171,
+      "false_negative": 4,
+      "true_positive": 19,
+      "flagged_total": 190,
+      "false_positive_rate": 0.010021097046413503
+    },
+    "autoencoder": {
+      "n_samples": 17087,
+      "n_fraud": 23,
+      "fraud_prevalence": 0.0013460525545736526,
+      "threshold": 2.1436567306518555,
+      "accuracy": 0.9893486276116346,
+      "precision": 0.06557377049180328,
+      "recall": 0.5217391304347826,
+      "f1": 0.11650485436893204,
+      "roc_auc": 0.9457872153937097,
+      "average_precision": 0.05192994098999119,
+      "true_negative": 16893,
+      "false_positive": 171,
+      "false_negative": 11,
+      "true_positive": 12,
+      "flagged_total": 183,
+      "false_positive_rate": 0.010021097046413503
+    },
+    "hybrid": {
+      "n_samples": 17087,
+      "n_fraud": 23,
+      "fraud_prevalence": 0.0013460525545736526,
+      "threshold": 1.8105945771736431,
+      "accuracy": 0.9898168198045297,
+      "precision": 0.10471204188481675,
+      "recall": 0.8695652173913043,
+      "f1": 0.18691588785046728,
+      "roc_auc": 0.9676104282598503,
+      "average_precision": 0.7958077285727037,
+      "true_negative": 16893,
+      "false_positive": 171,
+      "false_negative": 3,
+      "true_positive": 20,
+      "flagged_total": 191,
+      "false_positive_rate": 0.010021097046413503
+    }
+  },
+  "test_metrics": {
+    "XGBoost": {
+      "n_samples": 56961,
+      "n_fraud": 75,
+      "fraud_prevalence": 0.0013166903670932743,
+      "threshold": 0.29877907037734985,
+      "accuracy": 0.9929074278892576,
+      "precision": 0.1400437636761488,
+      "recall": 0.8533333333333334,
+      "f1": 0.24060150375939848,
+      "roc_auc": 0.9854683636278405,
+      "average_precision": 0.7867101482414763,
+      "true_negative": 56493,
+      "false_positive": 393,
+      "false_negative": 11,
+      "true_positive": 64,
+      "flagged_total": 457,
+      "false_positive_rate": 0.006908553950005274
+    },
+    "Autoencoder": {
+      "n_samples": 56961,
+      "n_fraud": 75,
+      "fraud_prevalence": 0.0013166903670932743,
+      "threshold": 2.1436567306518555,
+      "accuracy": 0.9931707659626762,
+      "precision": 0.09536082474226804,
+      "recall": 0.49333333333333335,
+      "f1": 0.15982721382289417,
+      "roc_auc": 0.9215842210737264,
+      "average_precision": 0.0845385485637537,
+      "true_negative": 56535,
+      "false_positive": 351,
+      "false_negative": 38,
+      "true_positive": 37,
+      "flagged_total": 388,
+      "false_positive_rate": 0.006170235207256619
+    },
+    "Hybrid (XGBoost + autoencoder)": {
+      "n_samples": 56961,
+      "n_fraud": 75,
+      "fraud_prevalence": 0.0013166903670932743,
+      "threshold": 1.8105945771736431,
+      "accuracy": 0.9932409894489211,
+      "precision": 0.14772727272727273,
+      "recall": 0.8666666666666667,
+      "f1": 0.2524271844660194,
+      "roc_auc": 0.9850983839023075,
+      "average_precision": 0.7370507708796554,
+      "true_negative": 56511,
+      "false_positive": 375,
+      "false_negative": 10,
+      "true_positive": 65,
+      "flagged_total": 440,
+      "false_positive_rate": 0.006592131631684421
+    }
+  },
+  "hybrid_coefficients": {
+    "normalized XGBoost logit": 1.229022598879858,
+    "normalized log1p anomaly error": 0.21173879913912133
+  },
+  "test_complementarity": {
+    "test_fraud_cases": 75,
+    "xgboost_caught_fraud": 64,
+    "autoencoder_caught_fraud": 37,
+    "hybrid_caught_fraud": 65,
+    "fraud_caught_by_autoencoder_but_missed_by_xgboost": 1,
+    "fraud_caught_by_xgboost_but_missed_by_autoencoder": 28,
+    "fraud_caught_by_hybrid_but_missed_by_xgboost": 1,
+    "false_positives_xgboost": 393,
+    "false_positives_autoencoder": 351,
+    "false_positives_hybrid": 375
+  },
+  "caveats": [
+    "The meta-learner is trained using validation labels, so hybrid validation metrics are not presented as unbiased model-performance estimates.",
+    "Autoencoder checkpoint selection in this phase uses legitimate-only validation reconstruction loss and does not inspect validation fraud labels.",
+    "Only 57 fraud cases exist in the full validation partition; model and threshold estimates are uncertain.",
+    "The hybrid score is not probability-calibrated; no independent calibration block with adequate fraud cases is available.",
+    "The historical test period has been inspected in previous phases; a fresh later-time holdout is recommended for a final independent claim.",
+    "This dataset is anonymized and historical; this is a technical portfolio prototype, not a production bank decision system."
+  ],
+  "artifacts": {
+    "test_metrics_csv": "reports/hybrid/test_model_comparison.csv",
+    "test_predictions_csv": "reports/hybrid/test_predictions.csv",
+    "threshold_calibration_csv": "reports/hybrid/threshold_calibration_validation.csv",
+    "comparison_chart": "reports/hybrid/test_model_comparison.png",
+    "precision_recall_chart": "reports/hybrid/test_precision_recall_curves.png",
+    "hybrid_stack_model": "models/hybrid_stack.joblib",
+    "xgboost_model": "models/hybrid_xgboost_train_only.json",
+    "autoencoder_model": "models/hybrid_autoencoder_state.pt"
+  }
+}
