@@ -1,6 +1,3 @@
-# FraudShield-AI
-Your project is FraudShield AI: an end-to-end financial fraud detection platform using Machine Learning, Deep Learning, Explainable AI, and MLOps.  The objective is not simply to train a model that predicts whether a transaction is fraudulent.
-
 # FraudShield AI
 
 An end-to-end learning project for imbalanced financial fraud detection. The planned system will compare supervised ML and deep-learning approaches, explain predictions, expose a prediction API, and add monitoring and reproducible experiments.
@@ -67,3 +64,33 @@ The validator reports schema differences, target distribution, missing values, d
 - Keep the held-out test set out of model selection and threshold tuning.
 - The public dataset is historical and anonymized; its features do not represent all information available in a real banking system.
 - Add results only after executing experiments; do not put unmeasured metrics in the README.
+
+## Phase 2 — Exploratory data analysis
+
+After placing `creditcard.csv` in `data/raw/`, you can explore the data interactively:
+
+```powershell
+jupyter lab
+```
+
+Open `notebooks/01_eda.ipynb` and run the cells from top to bottom. The notebook covers dataset structure, class imbalance, missing values, duplicate detection, amount/time distributions, feature distributions, and correlation analysis.
+
+For a repeatable command-line report that writes CSV tables, a JSON summary, and PNG plots to `reports/eda/`, run:
+
+```powershell
+python -m src.data.eda
+```
+
+To supply a different dataset path or report destination:
+
+```powershell
+python -m src.data.eda --data-path "D:\path\to\creditcard.csv" --output-dir reports/eda
+```
+
+The EDA script never edits the raw data or drops records. Duplicate counts are investigation signals, not an instruction to delete rows. `Time` is a relative elapsed-time feature, not a wall-clock timestamp, and `V1`–`V28` are anonymized PCA components without directly available business meanings.
+
+Run the tests with:
+
+```powershell
+python -m pytest -q
+```

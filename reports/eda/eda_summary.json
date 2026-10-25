@@ -1,0 +1,117 @@
+{
+  "dataset": "FraudShield AI transaction dataset",
+  "shape": {
+    "rows": 284807,
+    "columns": 31
+  },
+  "memory_usage_mib": 67.36,
+  "expected_columns_missing": [],
+  "extra_columns": [],
+  "column_types": {
+    "Time": "float64",
+    "V1": "float64",
+    "V2": "float64",
+    "V3": "float64",
+    "V4": "float64",
+    "V5": "float64",
+    "V6": "float64",
+    "V7": "float64",
+    "V8": "float64",
+    "V9": "float64",
+    "V10": "float64",
+    "V11": "float64",
+    "V12": "float64",
+    "V13": "float64",
+    "V14": "float64",
+    "V15": "float64",
+    "V16": "float64",
+    "V17": "float64",
+    "V18": "float64",
+    "V19": "float64",
+    "V20": "float64",
+    "V21": "float64",
+    "V22": "float64",
+    "V23": "float64",
+    "V24": "float64",
+    "V25": "float64",
+    "V26": "float64",
+    "V27": "float64",
+    "V28": "float64",
+    "Amount": "float64",
+    "Class": "int64"
+  },
+  "missing_values_total": 0,
+  "columns_with_missing_values": 0,
+  "exact_duplicate_rows_extra_copies": 1081,
+  "class_counts": {
+    "0": 284315,
+    "1": 492
+  },
+  "legitimate_count": 284315,
+  "fraud_count": 492,
+  "fraud_percentage": 0.172749,
+  "legitimate_percentage": 99.827251,
+  "amount_summary_by_class": {
+    "legitimate_0": {
+      "count": 284315,
+      "mean": 88.29102242231328,
+      "median": 22.0,
+      "std": 250.10509222589243,
+      "min": 0.0,
+      "max": 25691.16,
+      "q25": 5.65,
+      "q75": 77.05
+    },
+    "fraud_1": {
+      "count": 492,
+      "mean": 122.21132113821139,
+      "median": 9.25,
+      "std": 256.6832882977121,
+      "min": 0.0,
+      "max": 2125.87,
+      "q25": 1.0,
+      "q75": 105.89
+    }
+  },
+  "time_summary_by_class": {
+    "legitimate_0": {
+      "count": 284315,
+      "mean": 94838.20225805884,
+      "median": 84711.0,
+      "std": 47484.01578555078,
+      "min": 0.0,
+      "max": 172792.0,
+      "q25": 54230.0,
+      "q75": 139333.0
+    },
+    "fraud_1": {
+      "count": 492,
+      "mean": 80746.80691056911,
+      "median": 75568.5,
+      "std": 47835.36513767505,
+      "min": 406.0,
+      "max": 170348.0,
+      "q25": 41241.5,
+      "q75": 128483.0
+    }
+  },
+  "top_absolute_correlations_with_class": {
+    "V17": -0.32648106724371595,
+    "V14": -0.3025436958044028,
+    "V12": -0.26059292487722485,
+    "V10": -0.21688294364103206,
+    "V16": -0.19653894030401736,
+    "V3": -0.19296082706741602,
+    "V7": -0.18725659151430013,
+    "V11": 0.15487564474394433,
+    "V4": 0.13344748623900718,
+    "V18": -0.11148525388904133
+  },
+  "notes": [
+    "Time is a relative elapsed-time feature, not a calendar timestamp.",
+    "V1-V28 are anonymized PCA components; do not assign unsupported business meanings to them.",
+    "Correlation is descriptive and does not establish causation or model importance.",
+    "Duplicate rows are reported for investigation; the source dataset is never modified by this script.",
+    "If a test run used synthetic data, do not interpret its values as actual dataset results."
+  ]
+}

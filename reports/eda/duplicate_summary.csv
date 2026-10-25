@@ -1,0 +1,5 @@
+check,count,meaning
+exact_duplicate_rows_extra_copies,1081,"Rows identical across every column, excluding each group's first occurrence."
+duplicate_feature_rows_extra_copies,1081,Rows identical across input features while ignoring the target label.
+rows_in_duplicate_feature_groups,1854,All rows belonging to groups with identical input features.
+duplicate_feature_groups_with_conflicting_labels,0,Identical input-feature groups that contain more than one target label.
