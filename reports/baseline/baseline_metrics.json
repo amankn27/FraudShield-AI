@@ -1,0 +1,113 @@
+{
+  "project": "FraudShield AI",
+  "model": "LogisticRegression",
+  "model_configuration": {
+    "class_weight": null,
+    "max_iter": 1000,
+    "solver": "lbfgs",
+    "threshold": 0.5,
+    "preprocessing": [
+      "median imputer (fitted on train only)",
+      "StandardScaler (fitted on train only)"
+    ]
+  },
+  "split_strategy": "chronological 60/20/20 by row order, preserving equal-Time groups",
+  "split_cutoffs": {
+    "train_fraction_actual": 0.6000133423686917,
+    "validation_fraction_actual": 0.1999880620911705,
+    "test_fraction_actual": 0.1999985955401377,
+    "train_time_max": 120396.0,
+    "validation_time_min": 120397.0,
+    "validation_time_max": 145248.0,
+    "test_time_min": 145249.0
+  },
+  "split_summary": {
+    "train": {
+      "rows": 170888,
+      "fraud_count": 360,
+      "legitimate_count": 170528,
+      "fraud_rate_percent": 0.2106642947427555,
+      "time_min": 0.0,
+      "time_max": 120396.0
+    },
+    "validation": {
+      "rows": 56958,
+      "fraud_count": 57,
+      "legitimate_count": 56901,
+      "fraud_rate_percent": 0.10007373854419045,
+      "time_min": 120397.0,
+      "time_max": 145248.0
+    },
+    "test": {
+      "rows": 56961,
+      "fraud_count": 75,
+      "legitimate_count": 56886,
+      "fraud_rate_percent": 0.13166903670932742,
+      "time_min": 145249.0,
+      "time_max": 172792.0
+    }
+  },
+  "metrics": {
+    "train": {
+      "threshold": 0.5,
+      "n_samples": 170888,
+      "n_positive_actual": 360,
+      "n_negative_actual": 170528,
+      "accuracy": 0.998934974954356,
+      "precision": 0.832089552238806,
+      "recall": 0.6194444444444445,
+      "f1": 0.7101910828025477,
+      "roc_auc": 0.9796081875117282,
+      "pr_auc_average_precision": 0.7828377799305443,
+      "pr_auc_trapezoidal": 0.7826241353839912,
+      "true_negative": 170483,
+      "false_positive": 45,
+      "false_negative": 137,
+      "true_positive": 223
+    },
+    "validation": {
+      "threshold": 0.5,
+      "n_samples": 56958,
+      "n_positive_actual": 57,
+      "n_negative_actual": 56901,
+      "accuracy": 0.999209944169388,
+      "precision": 0.6428571428571429,
+      "recall": 0.47368421052631576,
+      "f1": 0.5454545454545454,
+      "roc_auc": 0.9677907797384007,
+      "pr_auc_average_precision": 0.6503759881332303,
+      "pr_auc_trapezoidal": 0.6486560915643967,
+      "true_negative": 56886,
+      "false_positive": 15,
+      "false_negative": 30,
+      "true_positive": 27
+    },
+    "test": {
+      "threshold": 0.5,
+      "n_samples": 56961,
+      "n_positive_actual": 75,
+      "n_negative_actual": 56886,
+      "accuracy": 0.9991748740366215,
+      "precision": 0.75,
+      "recall": 0.56,
+      "f1": 0.6412213740458015,
+      "roc_auc": 0.9730858207643357,
+      "pr_auc_average_precision": 0.6925795851978691,
+      "pr_auc_trapezoidal": 0.6910434108309269,
+      "true_negative": 56872,
+      "false_positive": 14,
+      "false_negative": 33,
+      "true_positive": 42
+    }
+  },
+  "warnings": [],
+  "interpretation_notes": [
+    "Accuracy is not a sufficient metric because fraud is rare.",
+    "Precision, recall, F1, ROC-AUC, and average precision are reported.",
+    "Average precision is the primary PR ranking metric; trapezoidal PR-AUC is also reported for transparency.",
+    "Threshold 0.5 is an initial reference, not an optimized business threshold.",
+    "The test set is for final evaluation only and must not be used to tune the model.",
+    "This historical chronological split tests later records, but this dataset spans a limited time window."
+  ],
+  "model_artifact": "models/logistic_regression_baseline.joblib"
+}

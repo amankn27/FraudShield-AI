@@ -94,3 +94,19 @@ Run the tests with:
 ```powershell
 python -m pytest -q
 ```
+
+## Phase 3 — Logistic Regression baseline
+
+The first baseline uses a chronological 60/20/20 train/validation/test split ordered by `Time`. The split code keeps equal timestamp values in one partition. The model is an sklearn pipeline: median imputation, standard scaling, and Logistic Regression. All preprocessing is fitted on train only. The default threshold is 0.5 and no oversampling or class weighting is applied in this phase.
+
+With the analyzed dataset, the test partition contains 56,961 rows and 75 fraud cases. At threshold 0.5, the first run achieved precision 0.7500, recall 0.5600, F1 0.6412, ROC-AUC 0.9731, and Average Precision 0.6926. The test confusion matrix is TN=56,872, FP=14, FN=33, TP=42. Accuracy is 99.9175%, but is not sufficient for an imbalanced dataset.
+
+Run the baseline from the repository root:
+
+```powershell
+python -m src.models.baseline
+```
+
+The outputs are written to `reports/baseline/`, and the fitted pipeline is saved to `models/logistic_regression_baseline.joblib`. The raw CSV is excluded from Git. Read `reports/baseline/PHASE3_BASELINE.md` for split details, metric definitions, limitations, and leakage controls.
+
+Open `notebooks/02_baseline_logistic_regression.ipynb` with JupyterLab for an interactive walkthrough.
