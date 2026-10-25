@@ -42,3 +42,8 @@ Thumbs.db
 *.log
 tmp/
 temp/
+
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3

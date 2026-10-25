@@ -1,8 +1,16 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from api import main
+from src.persistence.database import DatabaseManager
 
 client = TestClient(main.app)
+
+
+@pytest.fixture(autouse=True)
+def disable_database_for_api_unit_tests(monkeypatch):
+    """Keep model/API unit tests deterministic even when a developer has a local .env DB URL."""
+    monkeypatch.setattr(main, "get_database_manager", lambda: DatabaseManager("", required=False))
 
 
 def valid_payload():
@@ -69,6 +77,8 @@ def test_predict_endpoint_returns_prediction_and_shap(monkeypatch):
     assert data["top_positive_contributions"][0]["feature"] == "V14"
     assert data["request_id"]
     assert data["latency_ms"] >= 0
+    assert data["persistence_status"] == "disabled"
+    assert data["prediction_id"] is None
 
 
 def test_predict_can_skip_shap_for_lower_latency(monkeypatch):

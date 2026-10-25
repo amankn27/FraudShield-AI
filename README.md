@@ -231,3 +231,43 @@ Open `http://127.0.0.1:8000/docs` for interactive OpenAPI documentation. The API
 The request must contain the complete model feature vector (`Time`, `V1`–`V28`, `Amount`). Pydantic rejects missing fields, unexpected fields including `Class`, non-finite values, and negative `Time` or `Amount`. The API returns 422 for invalid inputs, 503 when required model artifacts cannot be loaded, and generic 500 errors for unexpected inference failures. The model score is uncalibrated; `risk_score_0_100` is only 100 times that score, not a calibrated fraud percentage. SHAP describes the model's attribution and not real-world causation.
 
 The interactive walkthrough is `notebooks/09_fastapi_prediction_service.ipynb`. The smoke-test request, response, and report are in `reports/api/`. Run `python -m pytest -q` to execute the full suite. This development API has no authentication, authorization, rate limiting, or production transport security; do not expose it publicly until those controls are added.
+
+## Phase 11 — PostgreSQL prediction logging
+
+Phase 11 adds SQLAlchemy persistence for prediction outcomes and an append-only investigation-status history. It logs the model/policy versions, UTC timestamp, model score, 0–100 display score, threshold, risk level, decision, measured inference latency, and a compact SHAP summary when available. By default, the raw transaction feature vector is **not** persisted.
+
+### Start the local PostgreSQL database
+
+1. Copy `.env.example` to `.env` if you do not already have a local `.env` file. Never commit `.env`.
+2. Start PostgreSQL from the repository root:
+
+   ```powershell
+   docker compose up -d postgres
+   ```
+
+3. Install new dependencies and apply the migration:
+
+   ```powershell
+   python -m pip install -r requirements.txt
+   alembic upgrade head
+   ```
+
+4. Start the API:
+
+   ```powershell
+   uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+
+The development compose file uses a disposable local password. Replace it and configure a secret-managed URL before any shared or production deployment.
+
+### Database endpoints
+
+- `POST /predict` creates a prediction record when persistence is configured.
+- `GET /predictions` lists records, with `limit`, `offset`, `investigation_status`, and `risk_level` filters.
+- `GET /predictions/{prediction_id}` returns a record and investigation event history.
+- `PATCH /predictions/{prediction_id}/investigation` updates the status and appends an event. Allowed statuses are `NEW`, `IN_REVIEW`, `CONFIRMED_FRAUD`, `FALSE_POSITIVE`, and `CLOSED`.
+- `GET /health` reports whether the database is enabled and reachable.
+
+If `DATABASE_URL` is empty, predictions still work but return `persistence_status="disabled"`; history endpoints return 503 because there is no configured store. If `DATABASE_URL` is configured, `DATABASE_REQUIRED` defaults to true and failed writes return 503 instead of silently dropping the prediction log. Set `DATABASE_REQUIRED=false` only when best-effort logging is an intentional development choice.
+
+Database schema changes are versioned with Alembic. Use migrations for normal setup; `DatabaseManager.create_schema_for_local_dev()` exists for tests and isolated local prototyping only.
