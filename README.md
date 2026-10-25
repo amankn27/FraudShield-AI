@@ -2,7 +2,7 @@
 
 An end-to-end learning project for imbalanced financial fraud detection. The planned system will compare supervised ML and deep-learning approaches, explain predictions, expose a prediction API, and add monitoring and reproducible experiments.
 
-> **Status:** Phase 1 — project foundation. No model performance claims are made yet.
+> **Status:** Phase 5 complete — Logistic Regression baseline, imbalance experiments, and a tuned XGBoost model have been evaluated. See the phase reports for measured results and limitations.
 
 ## Dataset
 
@@ -110,3 +110,30 @@ python -m src.models.baseline
 The outputs are written to `reports/baseline/`, and the fitted pipeline is saved to `models/logistic_regression_baseline.joblib`. The raw CSV is excluded from Git. Read `reports/baseline/PHASE3_BASELINE.md` for split details, metric definitions, limitations, and leakage controls.
 
 Open `notebooks/02_baseline_logistic_regression.ipynb` with JupyterLab for an interactive walkthrough.
+
+## Phase 4 — Imbalanced learning experiments
+
+Install the additional dependency with `pip install -r requirements.txt`, then run:
+
+```powershell
+python -m src.models.imbalance_experiments
+```
+
+This compares the unweighted Logistic Regression baseline, `class_weight="balanced"`, random undersampling, and SMOTE. All strategies use the same chronological 60/20/20 split. Imputation/scaling and resampling are fitted within the training pipeline only; validation and test retain their natural class ratios. Strategies are ranked by validation Average Precision, and only the validation-selected strategy is evaluated on the holdout test partition. The decision threshold is fixed at 0.5 in this phase; threshold optimization is a later step.
+
+Reports are written to `reports/imbalance/`. The raw dataset is not committed to Git.
+
+
+## Phase 5 — XGBoost and hyperparameter tuning
+
+Install dependencies with `pip install -r requirements.txt`, then run:
+
+```powershell
+python -m src.models.xgboost_model
+```
+
+The experiment builds expanding-window chronological CV folds inside the training partition and runs `RandomizedSearchCV` using Average Precision. It searches tree complexity, learning rate, row/column subsampling, regularization, and `scale_pos_weight`. It uses CV to rank candidates, checks the top candidates on validation Average Precision because the chronological periods exhibit distribution shift, then refits the selected configuration on train + validation before evaluating the untouched test partition. The test set is not used during this XGBoost search or threshold tuning. Because the same time block has been reviewed in earlier learning phases, treat it as a repeated holdout across project history; for a strictly independent final claim after further iteration, create a new later-time holdout.
+
+The selected model is saved to `models/xgboost_best.joblib` and the native XGBoost model is saved to `models/xgboost_best.json`. Reports, randomized-search results, candidate validation metrics, test predictions, confusion matrices, feature importance, and a model comparison are saved under `reports/xgboost/`. Read `reports/xgboost/PHASE5_XGBOOST_FINDINGS.md` before using results in a resume or project description.
+
+The current tuning budget is four randomized configurations across three chronological CV folds to keep the run practical; use `python -m src.models.xgboost_model --n-iter 10 --n-jobs 2` for a broader search. The selected validation metric is Average Precision, so threshold-0.5 precision and F1 may remain low. Threshold optimization and cost-sensitive decision-making are Phase 6.

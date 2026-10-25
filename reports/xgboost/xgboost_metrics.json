@@ -1,0 +1,154 @@
+{
+  "project": "FraudShield AI",
+  "model": "XGBClassifier",
+  "xgboost_version": "3.1.3",
+  "selection_metric": "RandomizedSearchCV Average Precision for CV ranking; validation Average Precision selects among the top five CV-ranked candidates",
+  "search": {
+    "n_iter": 4,
+    "cv_splits": [
+      {
+        "fold": 1,
+        "train_rows": 85445,
+        "train_fraud": 204,
+        "validation_rows": 28481,
+        "validation_fraud": 37,
+        "train_time_max": 60776.0,
+        "validation_time_min": 60777.0,
+        "validation_time_max": 73262.0
+      },
+      {
+        "fold": 2,
+        "train_rows": 113926,
+        "train_fraud": 241,
+        "validation_rows": 28482,
+        "validation_fraud": 29,
+        "train_time_max": 73262.0,
+        "validation_time_min": 73263.0,
+        "validation_time_max": 84695.0
+      },
+      {
+        "fold": 3,
+        "train_rows": 142408,
+        "train_fraud": 270,
+        "validation_rows": 28480,
+        "validation_fraud": 90,
+        "train_time_max": 84695.0,
+        "validation_time_min": 84696.0,
+        "validation_time_max": 120396.0
+      }
+    ],
+    "best_cv_average_precision": 0.8038485003373955,
+    "best_cv_params": {
+      "colsample_bytree": 0.8832290311184181,
+      "gamma": 1.0,
+      "learning_rate": 0.18661212048851336,
+      "max_depth": 3,
+      "min_child_weight": 1.8891200276189386,
+      "n_estimators": 123,
+      "reg_alpha": 0.1,
+      "reg_lambda": 1.0,
+      "scale_pos_weight": 1.0,
+      "subsample": 0.7564847850358383
+    },
+    "selected_candidate_cv_rank": 3,
+    "selected_candidate_cv_average_precision": 0.7558717674210019,
+    "selected_candidate_validation_average_precision": 0.7795065012529709,
+    "selected_params": {
+      "colsample_bytree": 0.749816047538945,
+      "gamma": 1.0,
+      "learning_rate": 0.030511586180091473,
+      "max_depth": 2,
+      "min_child_weight": 5.977505142360254,
+      "n_estimators": 142,
+      "reg_alpha": 0.01,
+      "reg_lambda": 5.0,
+      "scale_pos_weight": 100.0,
+      "subsample": 0.8603902541101232
+    },
+    "train_negative_count": 170528,
+    "train_positive_count": 360,
+    "negative_to_positive_ratio_candidate": 473.68888888888887,
+    "scoring": "average_precision",
+    "test_touched_during_search": false
+  },
+  "split_summary": {
+    "train": {
+      "rows": 170888,
+      "fraud_count": 360,
+      "legitimate_count": 170528,
+      "fraud_rate_percent": 0.2106642947427555,
+      "time_min": 0.0,
+      "time_max": 120396.0
+    },
+    "validation": {
+      "rows": 56958,
+      "fraud_count": 57,
+      "legitimate_count": 56901,
+      "fraud_rate_percent": 0.10007373854419045,
+      "time_min": 120397.0,
+      "time_max": 145248.0
+    },
+    "test": {
+      "rows": 56961,
+      "fraud_count": 75,
+      "legitimate_count": 56886,
+      "fraud_rate_percent": 0.13166903670932742,
+      "time_min": 145249.0,
+      "time_max": 172792.0
+    }
+  },
+  "validation_metrics_threshold_0_5": {
+    "threshold": 0.5,
+    "n_samples": 56958,
+    "n_positive_actual": 57,
+    "n_negative_actual": 56901,
+    "accuracy": 0.9956634713297517,
+    "precision": 0.16312056737588654,
+    "recall": 0.8070175438596491,
+    "f1": 0.2713864306784661,
+    "roc_auc": 0.9739877540461935,
+    "pr_auc_average_precision": 0.7795065012529709,
+    "pr_auc_trapezoidal": 0.7791426068022518,
+    "true_negative": 56665,
+    "false_positive": 236,
+    "false_negative": 11,
+    "true_positive": 46
+  },
+  "test_metrics_threshold_0_5": {
+    "threshold": 0.5,
+    "n_samples": 56961,
+    "n_positive_actual": 75,
+    "n_negative_actual": 56886,
+    "accuracy": 0.9967872755042924,
+    "precision": 0.2631578947368421,
+    "recall": 0.8,
+    "f1": 0.39603960396039606,
+    "roc_auc": 0.9856810697418228,
+    "pr_auc_average_precision": 0.7871787469874216,
+    "pr_auc_trapezoidal": 0.7868330820926652,
+    "true_negative": 56718,
+    "false_positive": 168,
+    "false_negative": 15,
+    "true_positive": 60
+  },
+  "artifacts": {
+    "model_path_joblib": "models/xgboost_best.joblib",
+    "model_path_native_json": "models/xgboost_best.json",
+    "cv_results": "reports/xgboost/randomized_search_cv_results.csv",
+    "comparison": "reports/xgboost/test_model_comparison.csv",
+    "comparison_chart": "reports/xgboost/test_model_comparison.png",
+    "feature_importance": "reports/xgboost/feature_importance.csv"
+  },
+  "interpretation_notes": [
+    "RandomizedSearchCV ranks parameter candidates using chronological CV Average Precision inside the training partition only.",
+    "The top five CV-ranked candidates (or fewer if fewer were searched) are then compared using validation Average Precision because CV and validation time blocks show distribution shift.",
+    "The validation partition is used for model selection, so it is not an unbiased final evaluation; the test partition remains untouched until final evaluation.",
+    "CV folds are expanding windows made from contiguous chronological blocks; equal-Time groups are not split.",
+    "The final XGBoost artifact is refit on training + validation after the model configuration is selected.",
+    "The test partition is held out from hyperparameter selection and evaluated after final refit.",
+    "At threshold 0.5, weighted model scores are not guaranteed to be calibrated real-world fraud probabilities.",
+    "scale_pos_weight negative/positive ratio is included as one search candidate, not assumed to be optimal.",
+    "Feature importance describes model usage, not causality; V1-V28 are anonymized PCA components.",
+    "Prior Phase 3/4 test metrics are included for historical comparison. Training protocols differ across those earlier experiments and should be noted when interpreting differences."
+  ]
+}

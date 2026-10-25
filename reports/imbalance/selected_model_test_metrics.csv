@@ -1,0 +1,2 @@
+strategy,experiment,threshold,n_samples,n_positive_actual,n_negative_actual,accuracy,precision,recall,f1,roc_auc,pr_auc_average_precision,pr_auc_trapezoidal,true_negative,false_positive,false_negative,true_positive
+smote,SMOTE oversampling,0.5,56961,75,56886,0.9837081511911658,0.06700507614213198,0.88,0.12452830188679245,0.9859531929355788,0.7728961423280222,0.7785812876525731,55967,919,9,66

@@ -10,3 +10,5 @@ PyYAML>=6.0,<7.0
 python-dotenv>=1.0,<2.0
 pytest>=8.0,<10.0
 joblib>=1.4,<2.0
+# Phase 4: resampling inside leakage-safe training pipelines
+imbalanced-learn>=0.13,<0.15
