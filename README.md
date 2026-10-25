@@ -1,3 +1,6 @@
+# FraudShield-AI
+Your project is FraudShield AI: an end-to-end financial fraud detection platform using Machine Learning, Deep Learning, Explainable AI, and MLOps.  The objective is not simply to train a model that predicts whether a transaction is fraudulent.
+
 # FraudShield AI
 
 An end-to-end learning project for imbalanced financial fraud detection. The planned system will compare supervised ML and deep-learning approaches, explain predictions, expose a prediction API, and add monitoring and reproducible experiments.
