@@ -1,0 +1,221 @@
+{
+  "true_positive": {
+    "test_position": 1866,
+    "actual_class": 1,
+    "model_score": 0.9866111278533936,
+    "decision_threshold": 0.78530025,
+    "risk_level": "CRITICAL",
+    "decision": "FLAG_FOR_REVIEW",
+    "shap_base_value": 0.02406219209299794,
+    "shap_reconstructed_score": 0.986611205959888,
+    "top_features_by_absolute_contribution": [
+      {
+        "feature": "V14",
+        "feature_value": -9.15095100562097,
+        "shap_value": 0.3095972432999894,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V4",
+        "feature_value": 6.00941477810058,
+        "shap_value": 0.20198219105032933,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V12",
+        "feature_value": -6.15136219091534,
+        "shap_value": 0.1658174371616273,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V10",
+        "feature_value": -4.06309810827338,
+        "shap_value": 0.11161087368787764,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V17",
+        "feature_value": -2.89255533222526,
+        "shap_value": 0.06413966274303436,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V16",
+        "feature_value": -1.95229039984463,
+        "shap_value": 0.02491981141223895,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V11",
+        "feature_value": 2.94119009271712,
+        "shap_value": 0.020503316256919115,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V13",
+        "feature_value": -1.98952853525001,
+        "shap_value": 0.01948948041376345,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V21",
+        "feature_value": 0.407260461266497,
+        "shap_value": 0.01881183838719465,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V3",
+        "feature_value": -5.64734296336341,
+        "shap_value": 0.017363136707880648,
+        "direction": "increases_model_score"
+      }
+    ],
+    "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+  },
+  "false_positive": {
+    "test_position": 46622,
+    "actual_class": 0,
+    "model_score": 0.9758919477462769,
+    "decision_threshold": 0.78530025,
+    "risk_level": "CRITICAL",
+    "decision": "FLAG_FOR_REVIEW",
+    "shap_base_value": 0.02406219209299794,
+    "shap_reconstructed_score": 0.9758919099540013,
+    "top_features_by_absolute_contribution": [
+      {
+        "feature": "V14",
+        "feature_value": -3.78605774051617,
+        "shap_value": 0.3561837192195087,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V4",
+        "feature_value": 2.00892192389757,
+        "shap_value": 0.17719807182998795,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V12",
+        "feature_value": -2.65161775878709,
+        "shap_value": 0.1582659246488087,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V10",
+        "feature_value": -2.56647143201517,
+        "shap_value": 0.1360269201456259,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V17",
+        "feature_value": -1.86270659954886,
+        "shap_value": 0.07754694405010869,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V16",
+        "feature_value": -2.15223003548834,
+        "shap_value": 0.016667265697721322,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V21",
+        "feature_value": 0.504092329495996,
+        "shap_value": 0.016082403205280687,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V3",
+        "feature_value": -2.55719970451357,
+        "shap_value": 0.013099523488105613,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V11",
+        "feature_value": 0.996049302321868,
+        "shap_value": 0.01273708430126894,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V5",
+        "feature_value": 1.22329804564799,
+        "shap_value": -0.00828143923100575,
+        "direction": "decreases_model_score"
+      }
+    ],
+    "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+  },
+  "false_negative": {
+    "test_position": 21125,
+    "actual_class": 1,
+    "model_score": 0.7789945006370544,
+    "decision_threshold": 0.78530025,
+    "risk_level": "HIGH",
+    "decision": "NOT_FLAGGED",
+    "shap_base_value": 0.02406219209299794,
+    "shap_reconstructed_score": 0.7789945226719268,
+    "top_features_by_absolute_contribution": [
+      {
+        "feature": "V14",
+        "feature_value": -4.39363360177944,
+        "shap_value": 0.37710374989390244,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V10",
+        "feature_value": -3.44381902213252,
+        "shap_value": 0.16741259548713142,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V17",
+        "feature_value": -1.8597389700645,
+        "shap_value": 0.0902638216438042,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V12",
+        "feature_value": -1.6898355101423,
+        "shap_value": 0.07177935045240257,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "Amount",
+        "feature_value": 0.76,
+        "shap_value": 0.02361699838025641,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V16",
+        "feature_value": -1.17662872177405,
+        "shap_value": 0.014393912195331456,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V8",
+        "feature_value": 0.514360709931382,
+        "shap_value": -0.014284273091327473,
+        "direction": "decreases_model_score"
+      },
+      {
+        "feature": "V21",
+        "feature_value": 0.364130240632527,
+        "shap_value": 0.014220544219393868,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V11",
+        "feature_value": 2.21400028680889,
+        "shap_value": 0.01153440615271673,
+        "direction": "increases_model_score"
+      },
+      {
+        "feature": "V5",
+        "feature_value": 1.0874688565719,
+        "shap_value": -0.009712437990077684,
+        "direction": "decreases_model_score"
+      }
+    ],
+    "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+  }
+}

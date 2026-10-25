@@ -2,7 +2,7 @@
 
 An end-to-end learning project for imbalanced financial fraud detection. The planned system will compare supervised ML and deep-learning approaches, explain predictions, expose a prediction API, and add monitoring and reproducible experiments.
 
-> **Status:** Phase 5 complete — Logistic Regression baseline, imbalance experiments, and a tuned XGBoost model have been evaluated. See the phase reports for measured results and limitations.
+> **Status:** Phase 8 complete — the project now includes a Logistic Regression baseline, imbalance experiments, tuned XGBoost, a cost-sensitive decision policy, SHAP explanations, and a PyTorch autoencoder anomaly detector. See phase reports for measured results and limitations.
 
 ## Dataset
 
@@ -150,3 +150,41 @@ python -m pytest -q
 Policy assumptions live in `configs/decision_policy.yaml`; outputs are written to `reports/decision_engine/` and `models/decision_policy.json`. The default false-negative/false-positive cost values are illustrative relative units, not financial loss estimates. The output score is uncalibrated and must not be presented as a verified fraud probability. Threshold selection uses validation labels only; test metrics are reported only after the threshold has been selected.
 
 Open `notebooks/05_fraud_decision_engine.ipynb` for the step-by-step explanation.
+
+
+## Phase 7 — Explainable AI with SHAP
+
+The Phase 7 implementation uses `shap.TreeExplainer` to explain the saved XGBoost `predict_proba` output. It creates global mean-absolute SHAP rankings, a beeswarm plot, and local waterfall plots for a true positive, false positive, and false negative selected under the Phase 6 decision policy. It also exposes a focused FastAPI `POST /explain` endpoint.
+
+Run the artifacts and tests from the project root:
+
+```powershell
+python -m pip install -r requirements.txt
+python -m src.evaluation.shap_explanations
+python -m pytest -q
+```
+
+Start the explanation API with `uvicorn api.main:app --reload`, then open `http://127.0.0.1:8000/docs`. The API requires every model feature (`Time`, `V1`–`V28`, `Amount`). It is a development example without authentication; do not expose it publicly until security controls are added.
+
+SHAP values explain how the model output depends on the supplied features relative to the selected background dataset. They do not establish causation, calibrate model scores, or reveal the real-world meaning of anonymized PCA components. The global explanation subset intentionally includes all test fraud examples plus a sample of legitimate examples, so global mean-absolute SHAP values are not prevalence-weighted population estimates.
+
+
+## Phase 8 — PyTorch autoencoder anomaly detection
+
+This phase adds an unsupervised anomaly detector trained only on legitimate rows in the chronological training partition. It uses the 28 anonymized PCA features and `log1p(Amount)`; `Time` is deliberately excluded because the chronological evaluation makes later Time values systematically larger and can turn temporal progression into a spurious anomaly signal. `StandardScaler` is fitted on legitimate training data only. To keep laptop CPU runs practical, the scaler sees all legitimate training rows while the neural-network weights are fit on a seeded sample of up to 60,000 legitimate training rows.
+
+The model is a fully connected autoencoder: `29 -> 64 -> 32 -> 8-dimensional latent vector -> 32 -> 64 -> 29`. It minimizes mean-squared reconstruction error using Adam. The checkpoint/epoch is selected by validation Average Precision (validation labels inform model selection but never supply training gradients); the primary threshold is separately chosen as the 99th percentile of reconstruction errors on legitimate validation rows only. Test labels are reserved for the final evaluation.
+
+Run the experiment:
+
+```powershell
+python -m pip install -r requirements.txt
+python -m src.models.autoencoder_anomaly
+python -m pytest -q
+```
+
+For a larger run, raise `--max-train-normal-rows` and/or `--epochs`; e.g. `python -m src.models.autoencoder_anomaly --epochs 35 --max-train-normal-rows 120000`. Use `--device auto` to select CUDA when the installed PyTorch build supports it, or `--device cpu` to force CPU. On Windows, select the matching CPU/CUDA wheel from the [official PyTorch installer selector](https://pytorch.org/get-started/locally/).
+
+The model state is saved to `models/autoencoder_state.pt`, with fitted preprocessing and the threshold in `models/autoencoder_preprocessor.joblib`. The inference helper `score_transactions` returns an `anomaly_score` and thresholded `is_anomaly` flag. Reports are written to `reports/autoencoder/`, including training history, threshold sensitivity, score distributions, confusion matrix, test predictions, and a comparison with XGBoost.
+
+Anomaly scores are not calibrated probabilities or proof of fraud. In the final tested run, the autoencoder achieved test Average Precision 0.1569 versus 0.7872 for the supervised XGBoost model. The selected checkpoint maximizes validation Average Precision (using validation labels for model selection), while gradient updates still use legitimate training rows only. It can be studied as a complementary signal in Phase 9, but current results do not support replacing XGBoost with the autoencoder.

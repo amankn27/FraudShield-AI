@@ -1,6 +1,6 @@
 {
-  "policy_path": "D:\\fraudshield ai\\models\\decision_policy.json",
-  "output_dir": "D:\\fraudshield ai\\reports\\decision_engine",
+  "policy_path": "/mnt/data/fraudshield-ai/models/decision_policy.json",
+  "output_dir": "/mnt/data/fraudshield-ai/reports/decision_engine",
   "cost_false_positive": 1.0,
   "cost_false_negative": 100.0,
   "selected_threshold": 0.78530025,

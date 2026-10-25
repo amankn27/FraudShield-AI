@@ -1,0 +1,307 @@
+{
+  "model_artifact": "/mnt/data/fraudshield-ai/models/xgboost_best.joblib",
+  "policy_artifact": "/mnt/data/fraudshield-ai/models/decision_policy.json",
+  "background_artifact": "/mnt/data/fraudshield-ai/models/shap_background.csv",
+  "explainer": "shap.TreeExplainer",
+  "model_output": "probability",
+  "background_rows": 100,
+  "test_rows_in_explanation_sample": 376,
+  "test_fraud_rows_in_explanation_sample": 75,
+  "test_legitimate_rows_in_explanation_sample": 301,
+  "sampling_note": "Interpretability sample contains all test fraud cases and a random sample of legitimate transactions; global mean-absolute SHAP values are case-enriched, not prevalence-weighted population estimates.",
+  "decision_threshold_from_phase6_policy": 0.78530025,
+  "max_absolute_shap_additivity_error": 1.1016657741613756e-07,
+  "global_top_10_features": [
+    {
+      "feature": "V14",
+      "mean_abs_shap_value": 0.06434913463671578,
+      "mean_shap_value": 0.06004759019363652,
+      "fraction_positive_contribution": 0.449468085106383,
+      "fraction_negative_contribution": 0.550531914893617
+    },
+    {
+      "feature": "V4",
+      "mean_abs_shap_value": 0.03881070522772398,
+      "mean_shap_value": 0.030693694787586823,
+      "fraction_positive_contribution": 0.30319148936170215,
+      "fraction_negative_contribution": 0.6968085106382979
+    },
+    {
+      "feature": "V12",
+      "mean_abs_shap_value": 0.030578835743001465,
+      "mean_shap_value": 0.02524602424041383,
+      "fraction_positive_contribution": 0.375,
+      "fraction_negative_contribution": 0.625
+    },
+    {
+      "feature": "V10",
+      "mean_abs_shap_value": 0.019509548458338532,
+      "mean_shap_value": 0.01840512931417044,
+      "fraction_positive_contribution": 0.19946808510638298,
+      "fraction_negative_contribution": 0.800531914893617
+    },
+    {
+      "feature": "V17",
+      "mean_abs_shap_value": 0.010910827024205615,
+      "mean_shap_value": 0.009643147535829757,
+      "fraction_positive_contribution": 0.28191489361702127,
+      "fraction_negative_contribution": 0.7180851063829787
+    },
+    {
+      "feature": "V11",
+      "mean_abs_shap_value": 0.003551487854566696,
+      "mean_shap_value": 0.0028834490493680276,
+      "fraction_positive_contribution": 0.6143617021276596,
+      "fraction_negative_contribution": 0.38563829787234044
+    },
+    {
+      "feature": "V3",
+      "mean_abs_shap_value": 0.0032226921434797555,
+      "mean_shap_value": 0.0030302776750763885,
+      "fraction_positive_contribution": 0.9414893617021277,
+      "fraction_negative_contribution": 0.05851063829787234
+    },
+    {
+      "feature": "V21",
+      "mean_abs_shap_value": 0.0028723152571996616,
+      "mean_shap_value": 0.002399334985356988,
+      "fraction_positive_contribution": 0.300531914893617,
+      "fraction_negative_contribution": 0.699468085106383
+    },
+    {
+      "feature": "V16",
+      "mean_abs_shap_value": 0.0028577204074967943,
+      "mean_shap_value": 0.0025025146816963417,
+      "fraction_positive_contribution": 0.2898936170212766,
+      "fraction_negative_contribution": 0.7101063829787234
+    },
+    {
+      "feature": "V8",
+      "mean_abs_shap_value": 0.002466166504535344,
+      "mean_shap_value": -0.0007791326510057916,
+      "fraction_positive_contribution": 0.5877659574468085,
+      "fraction_negative_contribution": 0.4122340425531915
+    }
+  ],
+  "local_cases": {
+    "true_positive": {
+      "test_position": 1866,
+      "actual_class": 1,
+      "model_score": 0.9866111278533936,
+      "decision_threshold": 0.78530025,
+      "risk_level": "CRITICAL",
+      "decision": "FLAG_FOR_REVIEW",
+      "shap_base_value": 0.02406219209299794,
+      "shap_reconstructed_score": 0.986611205959888,
+      "top_features_by_absolute_contribution": [
+        {
+          "feature": "V14",
+          "feature_value": -9.15095100562097,
+          "shap_value": 0.3095972432999894,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V4",
+          "feature_value": 6.00941477810058,
+          "shap_value": 0.20198219105032933,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V12",
+          "feature_value": -6.15136219091534,
+          "shap_value": 0.1658174371616273,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V10",
+          "feature_value": -4.06309810827338,
+          "shap_value": 0.11161087368787764,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V17",
+          "feature_value": -2.89255533222526,
+          "shap_value": 0.06413966274303436,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V16",
+          "feature_value": -1.95229039984463,
+          "shap_value": 0.02491981141223895,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V11",
+          "feature_value": 2.94119009271712,
+          "shap_value": 0.020503316256919115,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V13",
+          "feature_value": -1.98952853525001,
+          "shap_value": 0.01948948041376345,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V21",
+          "feature_value": 0.407260461266497,
+          "shap_value": 0.01881183838719465,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V3",
+          "feature_value": -5.64734296336341,
+          "shap_value": 0.017363136707880648,
+          "direction": "increases_model_score"
+        }
+      ],
+      "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+    },
+    "false_positive": {
+      "test_position": 46622,
+      "actual_class": 0,
+      "model_score": 0.9758919477462769,
+      "decision_threshold": 0.78530025,
+      "risk_level": "CRITICAL",
+      "decision": "FLAG_FOR_REVIEW",
+      "shap_base_value": 0.02406219209299794,
+      "shap_reconstructed_score": 0.9758919099540013,
+      "top_features_by_absolute_contribution": [
+        {
+          "feature": "V14",
+          "feature_value": -3.78605774051617,
+          "shap_value": 0.3561837192195087,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V4",
+          "feature_value": 2.00892192389757,
+          "shap_value": 0.17719807182998795,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V12",
+          "feature_value": -2.65161775878709,
+          "shap_value": 0.1582659246488087,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V10",
+          "feature_value": -2.56647143201517,
+          "shap_value": 0.1360269201456259,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V17",
+          "feature_value": -1.86270659954886,
+          "shap_value": 0.07754694405010869,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V16",
+          "feature_value": -2.15223003548834,
+          "shap_value": 0.016667265697721322,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V21",
+          "feature_value": 0.504092329495996,
+          "shap_value": 0.016082403205280687,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V3",
+          "feature_value": -2.55719970451357,
+          "shap_value": 0.013099523488105613,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V11",
+          "feature_value": 0.996049302321868,
+          "shap_value": 0.01273708430126894,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V5",
+          "feature_value": 1.22329804564799,
+          "shap_value": -0.00828143923100575,
+          "direction": "decreases_model_score"
+        }
+      ],
+      "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+    },
+    "false_negative": {
+      "test_position": 21125,
+      "actual_class": 1,
+      "model_score": 0.7789945006370544,
+      "decision_threshold": 0.78530025,
+      "risk_level": "HIGH",
+      "decision": "NOT_FLAGGED",
+      "shap_base_value": 0.02406219209299794,
+      "shap_reconstructed_score": 0.7789945226719268,
+      "top_features_by_absolute_contribution": [
+        {
+          "feature": "V14",
+          "feature_value": -4.39363360177944,
+          "shap_value": 0.37710374989390244,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V10",
+          "feature_value": -3.44381902213252,
+          "shap_value": 0.16741259548713142,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V17",
+          "feature_value": -1.8597389700645,
+          "shap_value": 0.0902638216438042,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V12",
+          "feature_value": -1.6898355101423,
+          "shap_value": 0.07177935045240257,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "Amount",
+          "feature_value": 0.76,
+          "shap_value": 0.02361699838025641,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V16",
+          "feature_value": -1.17662872177405,
+          "shap_value": 0.014393912195331456,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V8",
+          "feature_value": 0.514360709931382,
+          "shap_value": -0.014284273091327473,
+          "direction": "decreases_model_score"
+        },
+        {
+          "feature": "V21",
+          "feature_value": 0.364130240632527,
+          "shap_value": 0.014220544219393868,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V11",
+          "feature_value": 2.21400028680889,
+          "shap_value": 0.01153440615271673,
+          "direction": "increases_model_score"
+        },
+        {
+          "feature": "V5",
+          "feature_value": 1.0874688565719,
+          "shap_value": -0.009712437990077684,
+          "direction": "decreases_model_score"
+        }
+      ],
+      "note": "Feature contributions explain the model output relative to its background; they are not causal claims."
+    }
+  }
+}
