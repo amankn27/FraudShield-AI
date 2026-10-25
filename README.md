@@ -137,3 +137,16 @@ The experiment builds expanding-window chronological CV folds inside the trainin
 The selected model is saved to `models/xgboost_best.joblib` and the native XGBoost model is saved to `models/xgboost_best.json`. Reports, randomized-search results, candidate validation metrics, test predictions, confusion matrices, feature importance, and a model comparison are saved under `reports/xgboost/`. Read `reports/xgboost/PHASE5_XGBOOST_FINDINGS.md` before using results in a resume or project description.
 
 The current tuning budget is four randomized configurations across three chronological CV folds to keep the run practical; use `python -m src.models.xgboost_model --n-iter 10 --n-jobs 2` for a broader search. The selected validation metric is Average Precision, so threshold-0.5 precision and F1 may remain low. Threshold optimization and cost-sensitive decision-making are Phase 6.
+
+## Phase 6 — Fraud decision engine
+
+Phase 6 converts the Phase 5 XGBoost score into a thresholded decision and relative risk bands.
+
+```powershell
+python -m src.evaluation.decision_engine
+python -m pytest -q
+```
+
+Policy assumptions live in `configs/decision_policy.yaml`; outputs are written to `reports/decision_engine/` and `models/decision_policy.json`. The default false-negative/false-positive cost values are illustrative relative units, not financial loss estimates. The output score is uncalibrated and must not be presented as a verified fraud probability. Threshold selection uses validation labels only; test metrics are reported only after the threshold has been selected.
+
+Open `notebooks/05_fraud_decision_engine.ipynb` for the step-by-step explanation.

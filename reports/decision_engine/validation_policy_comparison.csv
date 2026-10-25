@@ -1,0 +1,3 @@
+threshold,n_samples,n_fraud_actual,n_legitimate_actual,accuracy,precision,recall,f1,roc_auc,average_precision,true_negative,false_positive,false_negative,true_positive,predicted_positive,cost_false_positives,cost_false_negatives,total_cost_units,policy
+0.5,56958,57,56901,0.9956634713297517,0.16312056737588654,0.8070175438596491,0.2713864306784661,0.9739877540461935,0.7795065012529709,56665,236,11,46,282,236.0,1100.0,1336.0,Default threshold 0.5
+0.78530025,56958,57,56901,0.9992801713543312,0.6052631578947368,0.8070175438596491,0.6917293233082706,0.9739877540461935,0.7795065012529709,56871,30,11,46,76,30.0,1100.0,1130.0,Validation-selected cost threshold

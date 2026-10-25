@@ -1,0 +1,14 @@
+# Prototype policy configuration. Values are illustrative relative cost units,
+# not real currency or measured financial losses.
+costs:
+  false_positive: 1
+  false_negative: 100
+
+cost_sensitivity:
+  false_negative_costs: [1, 5, 10, 25, 50, 100, 250, 500]
+
+risk_bands:
+  # LOW/MEDIUM boundaries are derived from validation thresholds meeting these
+  # recall targets. CRITICAL begins at the cost-selected binary decision threshold.
+  target_recall_low_medium: 0.95
+  target_recall_medium_high: 0.85
