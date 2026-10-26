@@ -160,3 +160,39 @@ def test_shap_summary_persistence_omits_raw_feature_values():
     assert contributor["feature"] == "V14"
     assert contributor["shap_value"] == 0.3
     assert "feature_value" not in contributor
+
+
+def test_monitoring_summary_counts_predictions_and_daily_metrics():
+    from src.persistence.repository import get_monitoring_summary
+
+    manager = make_manager()
+    create_prediction(manager, prediction_payload("summary-a"))
+    second = prediction_payload("summary-b")
+    second["risk_level"] = "HIGH"
+    second["predicted_fraud"] = False
+    second["model_score"] = 0.21
+    second["prediction_latency_ms"] = 30.0
+    create_prediction(manager, second)
+
+    summary = get_monitoring_summary(manager)
+    assert summary["total_predictions"] == 2
+    assert summary["flagged_predictions"] == 1
+    assert summary["high_risk_predictions"] == 2
+    assert summary["risk_level_counts"] == {"CRITICAL": 1, "HIGH": 1}
+    assert summary["investigation_status_counts"] == {"NEW": 2}
+    assert summary["p95_latency_ms"] >= summary["p50_latency_ms"]
+    assert sum(day["total_predictions"] for day in summary["daily_predictions"]) == 2
+    manager.dispose()
+
+
+def test_monitoring_summary_api_uses_configured_persistence(monkeypatch):
+    manager = make_manager()
+    create_prediction(manager, prediction_payload("summary-api-a"))
+    monkeypatch.setattr(main, "get_database_manager", lambda: manager)
+    response = TestClient(main.app).get("/monitoring/summary")
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["total_predictions"] == 1
+    assert body["database_ready"] is True
+    assert body["daily_predictions"][0]["total_predictions"] == 1
+    manager.dispose()

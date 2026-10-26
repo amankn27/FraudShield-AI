@@ -148,3 +148,103 @@ def update_investigation(
         session.commit()
         session.refresh(row)
         return _record_dict(row, include_events=True)
+
+
+def get_monitoring_summary(manager: DatabaseManager) -> dict[str, Any]:
+    """Summarize persisted predictions for the dashboard.
+
+    This implementation is deliberately portable across PostgreSQL and SQLite.
+    It loads only monitoring columns (never raw transaction features). For very
+    large production histories, move daily aggregation and percentile calculation
+    into database-specific aggregate queries or a dedicated analytics store.
+    """
+    from collections import Counter, defaultdict
+    from math import floor
+
+    from sqlalchemy import select
+
+    with manager.session() as session:
+        rows = session.execute(select(
+            PredictionRecord.created_at,
+            PredictionRecord.model_version,
+            PredictionRecord.model_score,
+            PredictionRecord.risk_score_0_100,
+            PredictionRecord.risk_level,
+            PredictionRecord.predicted_fraud,
+            PredictionRecord.prediction_latency_ms,
+            PredictionRecord.investigation_status,
+        )).all()
+
+    risk_counts: Counter[str] = Counter()
+    status_counts: Counter[str] = Counter()
+    model_counts: Counter[str] = Counter()
+    daily: dict[str, dict[str, Any]] = defaultdict(lambda: {
+        "date": "", "total_predictions": 0, "flagged_predictions": 0,
+        "high_risk_predictions": 0, "latency_sum": 0.0,
+    })
+    scores: list[float] = []
+    latencies: list[float] = []
+    flagged_count = 0
+    high_risk_count = 0
+    latest = None
+
+    for row in rows:
+        created_at, model_version, score, risk_score, risk_level, predicted_fraud, latency, status = row
+        risk_counts[str(risk_level)] += 1
+        status_counts[str(status)] += 1
+        model_counts[str(model_version)] += 1
+        scores.append(float(score))
+        latencies.append(float(latency))
+        flagged_count += int(bool(predicted_fraud))
+        high_risk_count += int(str(risk_level) in {"HIGH", "CRITICAL"})
+        if latest is None or created_at > latest:
+            latest = created_at
+        day = created_at.date().isoformat()
+        bucket = daily[day]
+        bucket["date"] = day
+        bucket["total_predictions"] += 1
+        bucket["flagged_predictions"] += int(bool(predicted_fraud))
+        bucket["high_risk_predictions"] += int(str(risk_level) in {"HIGH", "CRITICAL"})
+        bucket["latency_sum"] += float(latency)
+
+    def percentile(values: list[float], q: float) -> float | None:
+        if not values:
+            return None
+        ordered = sorted(values)
+        position = (len(ordered) - 1) * q
+        lower = floor(position)
+        upper = min(lower + 1, len(ordered) - 1)
+        weight = position - lower
+        return float(ordered[lower] * (1 - weight) + ordered[upper] * weight)
+
+    daily_rows = []
+    for day in sorted(daily):
+        bucket = daily[day]
+        count = bucket["total_predictions"]
+        daily_rows.append({
+            "date": bucket["date"],
+            "total_predictions": count,
+            "flagged_predictions": bucket["flagged_predictions"],
+            "high_risk_predictions": bucket["high_risk_predictions"],
+            "average_latency_ms": bucket["latency_sum"] / count if count else 0.0,
+        })
+
+    total = len(rows)
+    return {
+        "total_predictions": total,
+        "flagged_predictions": flagged_count,
+        "high_risk_predictions": high_risk_count,
+        "mean_model_score": sum(scores) / len(scores) if scores else None,
+        "mean_latency_ms": sum(latencies) / len(latencies) if latencies else None,
+        "p50_latency_ms": percentile(latencies, 0.50),
+        "p95_latency_ms": percentile(latencies, 0.95),
+        "latest_prediction_at": latest,
+        "risk_level_counts": dict(risk_counts),
+        "investigation_status_counts": dict(status_counts),
+        "model_version_counts": dict(model_counts),
+        "daily_predictions": daily_rows,
+        "notes": [
+            "Flagged predictions are model decisions, not confirmed fraud labels.",
+            "Input-feature drift cannot be computed from prediction logs because raw features are not retained.",
+        ],
+    }

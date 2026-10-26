@@ -39,6 +39,7 @@ from src.persistence.repository import (
     get_prediction as get_stored_prediction,
     list_predictions,
     update_investigation,
+    get_monitoring_summary,
 )
 
 SERVICE_NAME = "fraudshield-ai-api"
@@ -338,6 +339,19 @@ def update_prediction_investigation(
         return PredictionDetailResponse.model_validate(record)
     except ValidationError as exc:
         raise HTTPException(status_code=500, detail="Updated investigation record is invalid.") from exc
+
+
+@app.get("/monitoring/summary", tags=["monitoring"])
+def monitoring_summary() -> dict[str, Any]:
+    """Return aggregate operational metrics over persisted prediction logs."""
+    manager = _database_or_503()
+    try:
+        summary = get_monitoring_summary(manager)
+    except Exception as exc:
+        logger.exception("Could not create monitoring summary")
+        raise HTTPException(status_code=503, detail="Monitoring data is temporarily unavailable.") from exc
+    summary["database_ready"] = manager.ping()
+    return summary
 
 
 @app.exception_handler(Exception)

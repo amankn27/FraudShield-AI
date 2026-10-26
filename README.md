@@ -2,7 +2,7 @@
 
 An end-to-end learning project for imbalanced financial fraud detection. The planned system will compare supervised ML and deep-learning approaches, explain predictions, expose a prediction API, and add monitoring and reproducible experiments.
 
-> **Status:** Phase 8 complete — the project now includes a Logistic Regression baseline, imbalance experiments, tuned XGBoost, a cost-sensitive decision policy, SHAP explanations, and a PyTorch autoencoder anomaly detector. See phase reports for measured results and limitations.
+> **Status:** Phase 12 implemented — the project includes reproducible ML experiments, XGBoost, a PyTorch autoencoder, hybrid evaluation, a cost-sensitive decision policy, SHAP explanations, FastAPI, PostgreSQL prediction logging, and a Streamlit analyst dashboard. See phase reports for measured results and limitations.
 
 ## Dataset
 
@@ -271,3 +271,34 @@ The development compose file uses a disposable local password. Replace it and co
 If `DATABASE_URL` is empty, predictions still work but return `persistence_status="disabled"`; history endpoints return 503 because there is no configured store. If `DATABASE_URL` is configured, `DATABASE_REQUIRED` defaults to true and failed writes return 503 instead of silently dropping the prediction log. Set `DATABASE_REQUIRED=false` only when best-effort logging is an intentional development choice.
 
 Database schema changes are versioned with Alembic. Use migrations for normal setup; `DatabaseManager.create_schema_for_local_dev()` exists for tests and isolated local prototyping only.
+
+
+## Phase 12 — Streamlit analyst dashboard
+
+The Streamlit application is a frontend for the FastAPI service. It does not connect directly to PostgreSQL; it calls API endpoints so validation, prediction, SHAP, persistence, and investigation workflow remain owned by the backend.
+
+Install requirements (includes Streamlit and Plotly), then start the API in one PowerShell terminal:
+
+```powershell
+uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Start Streamlit from a second terminal in the same project directory:
+
+```powershell
+streamlit run dashboard/app.py --server.port 8501
+```
+
+Open `http://localhost:8501`. Set the API URL in the sidebar if the API is running on a different host/port.
+
+The dashboard includes:
+
+- **Fraud overview**: logged prediction count, model-flagged decisions, high/critical risk, latency, review outcomes, daily volume and risk/status/model distributions.
+- **Transaction analyzer**: complete 30-feature request form, score, risk decision, persistence status, and local SHAP contribution chart.
+- **High-risk transactions**: review queue for HIGH/CRITICAL records, investigation status filter, record detail and audit history, and status updates.
+- **Historical predictions**: paginated/filterable prediction records and investigation detail.
+- **Monitoring dashboard**: health/readiness, active model metadata, p50/p95 latency, daily throughput, risk levels, model versions and investigation workload.
+
+The dashboard requires a reachable FastAPI instance. History/overview/monitoring also require PostgreSQL configured using `DATABASE_URL` and migrated using `alembic upgrade head`. The transaction analyzer can still call the API without persistence if the API is configured for optional logging. The new `GET /monitoring/summary` endpoint reads only persisted monitoring columns and returns aggregate counters and daily groups.
+
+Run tests with `python -m pytest -q`. See `reports/dashboard/PHASE12_STREAMLIT_FINDINGS.md` for implementation details and limitations. Do not expose this development dashboard publicly without authentication, authorization, TLS, rate limiting, secrets management, and operational review.

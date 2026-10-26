@@ -25,3 +25,7 @@ torch>=2.2,<3.0
 SQLAlchemy>=2.0,<3.0
 psycopg[binary]>=3.2,<4.0
 alembic>=1.14,<2.0
+
+# Phase 12: Streamlit analyst dashboard and interactive charts
+streamlit>=1.42,<2.0
+plotly>=5.24,<7.0
